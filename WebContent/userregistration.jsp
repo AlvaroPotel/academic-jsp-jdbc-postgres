@@ -1,3 +1,4 @@
+<%@page import="beans.UserBean"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 
@@ -14,8 +15,6 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
 	integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
 	crossorigin="anonymous">
-
-
 	
 </script>
 
@@ -23,8 +22,10 @@
 </head>
 <body>
 
-	<a href="allowedaccess.jsp">Back</a>
-	<a href="index.jsp">Sign out</a>
+	<a href="allowedaccess.jsp"><img alt="home"
+		src="resources/img/back.png" width="45px" height="40px"></a>
+	<a href="index.jsp"><img alt="home" src="resources/img/home.png"
+		width="67px" height="42px"></a>
 
 	<center>
 		<h1>User Registration</h1>
@@ -40,7 +41,8 @@
 					<tr>
 						<td>Id:</td>
 						<td><input type="text" readonly="readonly" id="id" name="id"
-							value="${user.id}" class="field-long" placeholder="Nothing" style="width: 173px"></td>
+							value="${user.id}" class="field-long" placeholder="Nothing"
+							style="width: 173px"></td>
 
 						<td>Zip:</td>
 						<td><input type="text" id="zip" name="zip"
@@ -67,6 +69,7 @@
 
 					</tr>
 					<tr>
+
 						<td>Name:</td>
 						<td><input type="text" id="name" name="name"
 							value="${user.name}" placeholder="Batata" maxlength="50"></td>
@@ -76,49 +79,150 @@
 							value="${user.city}" placeholder="-----"></td>
 
 					</tr>
+					<tr>
 						<td>IBGE:</td>
 						<td><input type="text" id="ibge" name="ibge"
 							value="${user.ibge}"></td>
-					
+
 						<td>States:</td>
 						<td><input type="text" id="states" name="states"
 							value="${user.states}" placeholder="-----"></td>
 
 					</tr>
-					<tr>
-
-					</tr>
 
 					<tr>
 						<td>Pic:</td>
-						<td><input type="file" id="pic" name="pic"> <input
-							type="text" style="display: none;" id="picTemp" name="picTemp"
-							readonly="readonly" value="${user.picBase64}"> <input
-							type="text" style="display: none;" id="contPicTemp"
-							name="contPicTemp" readonly="readonly"
-							value="${user.contentType}"></td>
+						<td><input type="file" name="pic" value="pic"></td>
+						<td>Active</td>
+						<td><input type="checkbox" id="active" name="active"
+							<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.isActive()) {
+					out.print(" ");
+					out.print("checked=\"checked\"");
+					out.print(" ");
+				}
+			}%>>
+
+						</td>
+					</tr>
+					<tr>
 						<td>PDF:</td>
-						<td><input type="file" id="pdf" name="pdf"> <input
-							type="text" style="display: none;" id="pdfTmp" name="pdfTemp"
-							readonly="readonly" value="${user.pdfBase64}"> <input
-							type="text" style="display: none;" id="contPdfTmp"
-							name="contPdfTmp" readonly="readonly"
-							value="${user.contentTypePdf}"></td>
+						<td><input type="file" name="pdf" value="pdf"></td>
+						<td>Gender</td>
+						<td><input type="radio" name="gender"
+							<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.getGender().equalsIgnoreCase("male")) {
+					out.print(" ");
+					out.print("checked=\"checked\"");
+					out.print(" ");
+				}
+			}%>
+							value="male">Male</input> <input type="radio" name="gender"
+							<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.getGender().equalsIgnoreCase("female")) {
+					out.print(" ");
+					out.print("checked=\"checked\"");
+					out.print(" ");
+				}
+			}%>
+							value="female">Female</input></td>
 					</tr>
 
 					<tr>
+						<td>Perfil</td>
+						<td><select id="perfil" name="perfil" style="width: 172px;">
+								<option value="Not inform"
+									<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.getPerfil().equalsIgnoreCase("Not inform")) {
+					out.print(" ");
+					out.print("selected=\"selected\"");
+					out.print(" ");
+				}
+			}%>>:: Select ::</option>
+
+								<option value="admin"
+									<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.getPerfil().equalsIgnoreCase("admin")) {
+					out.print(" ");
+					out.print("selected=\"selected\"");
+					out.print(" ");
+				}
+			}%>>Admin</option>
+
+								<option value="jdev"
+									<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.getPerfil().equalsIgnoreCase("jdev")) {
+					out.print(" ");
+					out.print("selected=\"selected\"");
+					out.print(" ");
+				}
+			}%>>Junior Developer</option>
+
+								<option value="mdev"
+									<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.getPerfil().equalsIgnoreCase("mdev")) {
+					out.print(" ");
+					out.print("selected=\"selected\"");
+					out.print(" ");
+				}
+			}%>>Mid Developer</option>
+
+								<option value="sdev"
+									<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.getPerfil().equalsIgnoreCase("sdev")) {
+					out.print(" ");
+					out.print("selected=\"selected\"");
+					out.print(" ");
+				}
+			}%>>Senior Developer</option>
+
+								<option value="manager"
+									<%if (request.getAttribute("user") != null) {
+				UserBean user = (UserBean) request.getAttribute("user");
+				if (user.getPerfil().equalsIgnoreCase("manager")) {
+					out.print(" ");
+					out.print("selected=\"selected\"");
+					out.print(" ");
+				}
+			}%>>Manager</option>
+
+						</select></td>
 					</tr>
 
 					<tr>
 						<td></td>
-						<td>
-							<input type="submit" value="Save" style="width: 173px"> 
+						<td><input type="submit" value="Save" style="width: 173px">
 						</td>
 						<td></td>
-						<td>
-							<input type="submit" value="cancel"	onclick="document.getElementById('formUser').action = 'saveUser?action=reset'" style="width: 173px" >
-						</td>
+						<td><input type="submit" value="cancel"
+							onclick="document.getElementById('formUser').action = 'saveUser?action=reset'"
+							style="width: 173px"></td>
 					</tr>
+				</table>
+			</li>
+		</ul>
+	</form>
+
+	<form action="servletSearch" method="post">
+		<ul class="form-style-1">
+			<li class="required">
+				<table>
+					<tr>
+						<td>Description</td>
+						<td><input type="text" id="consultDescri"
+							name="consultDescri" style="width: 343px"></td>
+						<td><input type="submit" id="search" name="search"
+							value="Search" style="width: 173px"></td>
+					</tr>
+
 				</table>
 			</li>
 		</ul>
@@ -141,29 +245,31 @@
 
 				<tr>
 
-					<td><c:out value="${user.id}" ></c:out></td>
-					
-					<c:if test="${user.picBase64.isEmpty() == false}">
+					<td><c:out value="${user.id}"></c:out></td>
+
+					<c:if test="${user.miniPicBase64.isEmpty() == false}">
 						<td><a
 							href="saveUser?action=download&types=img&user=${user.id}"><img
-								src='<c:out value="${user.tempPicUser}"></c:out>' alt="User Pic"
-								title="User Pic" width="32px" height="32px"></a></td>
+								src='<c:out value="${user.miniPicBase64}"></c:out>'
+								alt="User Pic" title="User Pic" width="32px" height="32px"></a></td>
 					</c:if>
-					<c:if test="${user.picBase64.isEmpty() == true}">
+					<c:if test="${user.miniPicBase64 == null}">
 						<td><img alt="Image User" src="resources/img/defaultuser.png"
 							width="35px" height="35px" onclick="alert('Not found')"></td>
 					</c:if>
 
 					<c:if test="${user.pdfBase64.isEmpty() == false}">
 						<td><a
-							href="saveUser?action=download&types=pdf&user=${user.id}"><img alt="Pdf User" src="resources/img/pdficon.png"
-							width="35px" height="35px"></a></td>
+							href="saveUser?action=download&types=pdf&user=${user.id}"><img
+								alt="Pdf User" src="resources/img/pdficon.png" width="35px"
+								height="35px"></a></td>
 					</c:if>
-					<c:if test="${user.pdfBase64.isEmpty() == true}">
+
+					<c:if test="${user.pdfBase64 == null}">
 						<td><img alt="Pdf User" src="resources/img/notfound.png"
 							width="35px" height="35px" onclick="alert('Not found')"></td>
 					</c:if>
-				
+
 					<td><c:out value="${user.name}"></c:out></td>
 
 					<td><a href="savePhones?action=addPhones&user=${user.id}"><img
@@ -172,7 +278,8 @@
 					<td><a href="saveUser?action=edit&user=${user.id}"><img
 							src="resources/img/editIcon.png" alt="Edit" title="Edit"
 							width="20px" height="20px"></a></td>
-					<td><a href="saveUser?action=delete&user=${user.id}"><img
+					<td><a href="saveUser?action=delete&user=${user.id}"
+						onclick=" return confirm('Are you sure?')"><img
 							src="resources/img/excluirIcon.png" alt="Delete" title="Delete"
 							width="20px" height="20px"></a></td>
 
@@ -222,7 +329,6 @@
 							alert("ZIP not Found.");
 						}
 					});
-
 		}
 	</script>
 

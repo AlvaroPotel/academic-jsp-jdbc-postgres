@@ -16,6 +16,10 @@
 <body>
 
 	<div class="login-page">
+	<center><h3>Didactic Project</h3></center><br/>
+	<center><h1>JSP+Servlet+JDBC</h1></center>
+
+	
 		<div class="form">
 			<form action="LoginServlet" method="post" class="login-form">
 
@@ -26,6 +30,9 @@
 			</form>
 
 		</div>
+		
+		<center><h3><a style="text-decoration: none" href="https://github.com/alvaropotel" >AP GitHub Java Web</a></h3></center><br/>			
+		
 	</div>
 </body>
 </html>

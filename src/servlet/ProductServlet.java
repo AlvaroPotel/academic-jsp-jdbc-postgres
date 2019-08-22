@@ -27,29 +27,26 @@ public class ProductServlet extends HttpServlet {
 		// response.getWriter().append("Served at: ").append(request.getContextPath());
 
 		try {
-			String action = request.getParameter("action");
+			String action = (request.getParameter("action")) != null? request.getParameter("action") : "listAll" ;
 			String product = request.getParameter("product");
+			
+			RequestDispatcher view = request.getRequestDispatcher("/productregistration.jsp");
 
 			if (action != null && action.equalsIgnoreCase("delete")) {
 				productDao.delete(product);
-				RequestDispatcher view = request.getRequestDispatcher("/productregistration.jsp");
 				request.setAttribute("products", productDao.list());
-				view.forward(request, response);
 
 			} else if (action != null && action.equalsIgnoreCase("edit")) {
-
 				ProductBean productBean = productDao.consult(product);
-
-				RequestDispatcher view = request.getRequestDispatcher("/productregistration.jsp");
 				request.setAttribute("product", productBean);
-				view.forward(request, response);
 
 			} else if (action != null && action.equalsIgnoreCase("listAll")) {
-				RequestDispatcher view = request.getRequestDispatcher("/productregistration.jsp");
 				request.setAttribute("products", productDao.list());
-				view.forward(request, response);
 						
 			}
+		
+			request.setAttribute("category", productDao.listCategory());
+			view.forward(request, response);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -77,6 +74,7 @@ public class ProductServlet extends HttpServlet {
 			String name = request.getParameter("name");
 			String quant = request.getParameter("quant");
 			String price = request.getParameter("price");
+			String category = request.getParameter("category_id");
 
 			try {
 
@@ -104,6 +102,7 @@ public class ProductServlet extends HttpServlet {
 				ProductBean productBean = new ProductBean();
 				productBean.setName(name);
 				productBean.setId(!id.isEmpty() ? Long.parseLong(id) : null);
+				productBean.setCategory_id(Long.parseLong(category));
 
 				if (quant != null && !quant.isEmpty()) {
 					productBean.setQuant(Double.parseDouble(quant));
@@ -133,6 +132,7 @@ public class ProductServlet extends HttpServlet {
 
 				RequestDispatcher view = request.getRequestDispatcher("/productregistration.jsp");
 				request.setAttribute("products", productDao.list());
+				request.setAttribute("category", productDao.listCategory());
 				view.forward(request, response);
 
 			} catch (Exception e) {

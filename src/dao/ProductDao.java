@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import beans.CategoryBean;
 import beans.ProductBean;
 import connection.SingleConnection;
 
@@ -21,13 +22,14 @@ public class ProductDao {
 	public void save(ProductBean product) {
 
 		try {
-			String sql = "insert into products(name, quant, price) values (?,?,?)";
+			String sql = "insert into products(name, quant, price, category_id) values (?,?,?,?)";
 
 			PreparedStatement statement = connection.prepareStatement(sql);
 
 			statement.setString(1, product.getName());
 			statement.setDouble(2, product.getQuant());
 			statement.setDouble(3, product.getPrice());
+			statement.setLong(4, product.getCategory_id());
 
 			statement.execute();
 			connection.commit();
@@ -59,10 +61,31 @@ public class ProductDao {
 			productBean.setName(resultSet.getString("name"));
 			productBean.setQuant(resultSet.getDouble("quant"));
 			productBean.setPrice(resultSet.getDouble("price"));
+			productBean.setCategory_id(resultSet.getLong("category_id"));
 
 			list.add(productBean);
 
 		}
+		return list;
+	}
+	
+	public List<CategoryBean> listCategory() throws Exception {
+		List<CategoryBean> list = new ArrayList<CategoryBean>();
+	
+		String sql = "select * from category";
+		PreparedStatement statement = connection.prepareStatement(sql);
+		ResultSet resultSet = statement.executeQuery();
+
+		while (resultSet.next()) {
+
+			CategoryBean categoryBean = new CategoryBean();
+
+			categoryBean.setId(resultSet.getLong("id"));
+			categoryBean.setName(resultSet.getString("name"));
+
+			list.add(categoryBean);
+		}
+		
 		return list;
 	}
 
@@ -99,6 +122,7 @@ public class ProductDao {
 			productBean.setName(resultSet.getString("name"));
 			productBean.setQuant(resultSet.getDouble("quant"));
 			productBean.setPrice(resultSet.getDouble("price"));
+			productBean.setCategory_id(resultSet.getLong("category_id"));
 
 			return productBean;
 		}
@@ -139,12 +163,13 @@ public class ProductDao {
 	public void update(ProductBean productBean) {
 
 		try {
-			String sql = "update products set name = ?, quant = ?, price = ? where id ='" + productBean.getId() + "'";
+			String sql = "update products set name = ?, quant = ?, price = ?, category_id = ? where id ='" + productBean.getId() + "'";
 
 			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, productBean.getName());
 			statement.setDouble(2, productBean.getQuant());
 			statement.setDouble(3, productBean.getPrice());
+			statement.setLong(4, productBean.getCategory_id());
 			statement.executeUpdate();
 			connection.commit();
 
@@ -157,6 +182,4 @@ public class ProductDao {
 			}
 		}
 	}
-	
-	
 }

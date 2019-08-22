@@ -14,8 +14,10 @@
 </head>
 <body>
 
-	<a href="allowedaccess.jsp">Back</a>
-	<a href="index.jsp">Sign out</a>
+	<a href="allowedaccess.jsp"><img alt="home" src="resources/img/back.png"width="45px"
+							height="40px" ></a>
+	<a href="index.jsp"><img alt="home" src="resources/img/home.png"width="67px"
+							height="42px" ></a>
 
 	<center>
 		<h1>Phones Registration</h1>
@@ -84,7 +86,7 @@
 					<td style="width: 150px"><c:out value="${phone.typess}"></c:out></td>
 
 					<td><a
-						href="savePhones?user=${phone.users}&action=deletePhone&phoneId=${phone.id}"><img
+						href="savePhones?user=${phone.users}&action=deletePhone&phoneId=${phone.id}" onclick=" return confirm('Are you sure?')"><img
 							src="resources/img/excluirIcon.png" alt="Delete" title="Delete"
 							width="20px" height="20px"></a></td>
 				</tr>

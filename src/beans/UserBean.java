@@ -13,15 +13,42 @@ public class UserBean {
 	private String city;
 	private String states;
 	private String ibge;
+	private String gender;
+	private String perfil;
 	
 	private String picBase64;
+	private String miniPicBase64;
 	private String contentType;
 	private String tempPicUser;
 	
 	private String pdfBase64;
 	private String contentTypePdf;
 	
+	private boolean updatePic = true;
+	private boolean updatePdf = true;
 	
+	private boolean active;
+	
+	public boolean isUpdatePic() {
+		return updatePic;
+	}
+
+	public void setUpdatePic(boolean updatePic) {
+		this.updatePic = updatePic;
+	}
+
+	public boolean isUpdatePdf() {
+		return updatePdf;
+	}
+
+	public void setUpdatePdf(boolean updatePdf) {
+		this.updatePdf = updatePdf;
+	}
+
+	public void setTempPicUser(String tempPicUser) {
+		this.tempPicUser = tempPicUser;
+	}
+
 	public String getPdfBase64() {
 		return pdfBase64;
 	}
@@ -149,4 +176,38 @@ public class UserBean {
 		this.password = password;
 	}
 
+	public String getMiniPicBase64() {
+		return miniPicBase64;
+	}
+
+	public void setMiniPicBase64(String miniPicBase64) {
+		this.miniPicBase64 = miniPicBase64;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(String perfil) {
+		this.perfil = perfil;
+	}
+
+	
+	
 }

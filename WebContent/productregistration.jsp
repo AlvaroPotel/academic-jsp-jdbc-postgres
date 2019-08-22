@@ -1,3 +1,5 @@
+<%@page import="beans.CategoryBean"%>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 
@@ -20,8 +22,10 @@
 </head>
 <body>
 
-	<a href="allowedaccess.jsp">Back</a>
-	<a href="index.jsp">Sign out</a>
+	<a href="allowedaccess.jsp"><img alt="home" src="resources/img/back.png"width="45px"
+							height="40px" ></a>
+	<a href="index.jsp"><img alt="home" src="resources/img/home.png"width="67px"
+							height="42px" ></a>
 
 
 	<center>
@@ -49,12 +53,27 @@
 					<tr>
 						<td>Quant:</td>
 						<td><input type="number" id="quant" name="quant"
-							value="${product.quant}"></td>
+							value="${product.quant}" ></td>
 					</tr>
 					<tr>
 						<td>Price:</td>
 						<td><input type="text" id="price" name="price"
 							value="${product.priceTemp}" data-thousands="." data-decimal="," ></td>
+					</tr>
+					<tr>
+						<td>Category</td>
+						<td>
+							<select id="category" name="category_id">
+							<option value="Not inform">:: Select ::</option>
+								<c:forEach items="${category}" var="cat" >
+									<option value="${cat.id}" id="${cat.id }" 
+									<c:if test="${cat.id == product.category_id}">
+										<c:out value="selected=selected" /> 
+									</c:if>>
+									${cat.name}
+								</c:forEach>
+							</select>
+						</td>
 					</tr>
 					<tr>
 						<td></td>
@@ -91,7 +110,7 @@
 					
 					<td><c:out value="${product.price}"></c:out></td>
 
-					<td><a href="saveProducts?action=delete&product=${product.id}"><img
+					<td><a href="saveProducts?action=delete&product=${product.id}" onclick=" return confirm('Are you sure?')"><img
 							src="resources/img/excluirIcon.png" alt="Delete" width="20px"
 							height="20px"></a></td>
 					<td><a href="saveProducts?action=edit&product=${product.id}"><img

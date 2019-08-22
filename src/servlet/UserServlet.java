@@ -1,11 +1,14 @@
 package servlet;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.imageio.ImageIO;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -14,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+import javax.xml.bind.DatatypeConverter;
 
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -34,7 +38,6 @@ public class UserServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// response.getWriter().append("Served at: ").append(request.getContextPath());
 
 		try {
 			String action = request.getParameter("action");
@@ -43,7 +46,7 @@ public class UserServlet extends HttpServlet {
 			if (action != null && action.equalsIgnoreCase("delete") && user != null) {
 				userDao.delete(user);
 				RequestDispatcher view = request.getRequestDispatcher("/userregistration.jsp");
-				request.setAttribute("users", userDao.list());
+				request.setAttribute("users", userDao.listAll());
 				view.forward(request, response);
 
 			} else if (action != null && action.equalsIgnoreCase("edit")) {
@@ -57,7 +60,7 @@ public class UserServlet extends HttpServlet {
 			} else if (action != null && action.equalsIgnoreCase("listAll")) {
 				
 				RequestDispatcher view = request.getRequestDispatcher("/userregistration.jsp");
-				request.setAttribute("users", userDao.list());
+				request.setAttribute("users", userDao.listAll());
 				view.forward(request, response);
 			
 			} else if(action != null && action.equalsIgnoreCase("download")) {
@@ -96,7 +99,7 @@ public class UserServlet extends HttpServlet {
 				
 			} else {
 				RequestDispatcher view = request.getRequestDispatcher("/userregistration.jsp");
-				request.setAttribute("users", userDao.list());
+				request.setAttribute("users", userDao.listAll());
 				view.forward(request, response);
 				
 			}
@@ -116,7 +119,7 @@ public class UserServlet extends HttpServlet {
 		if (action != null && action.equalsIgnoreCase("reset")) {
 			try {
 				RequestDispatcher view = request.getRequestDispatcher("/userregistration.jsp");
-				request.setAttribute("users", userDao.list());
+				request.setAttribute("users", userDao.listAll());
 				view.forward(request, response);
 
 			} catch (Exception e) {
@@ -135,7 +138,10 @@ public class UserServlet extends HttpServlet {
 			String city = request.getParameter("city");
 			String states = request.getParameter("states");
 			String ibge = request.getParameter("ibge");
-
+			String active = request.getParameter("active");
+			String gender = request.getParameter("gender");
+			String perfil = request.getParameter("perfil");
+			
 			UserBean user = new UserBean();
 			user.setId(!id.isEmpty() ? Long.parseLong(id) : null);
 			user.setLogin(login);
@@ -148,6 +154,14 @@ public class UserServlet extends HttpServlet {
 			user.setCity(city);
 			user.setStates(states);
 			user.setIbge(ibge);
+			user.setGender(gender);
+			user.setPerfil(perfil);
+			
+			if(request.getParameter("active") != null && request.getParameter("active").equalsIgnoreCase("on"))  {
+				user.setActive(true);
+			}else {
+				user.setActive(false);
+			}
 
 			try {
 				
@@ -156,14 +170,32 @@ public class UserServlet extends HttpServlet {
 					Part imgPic = request.getPart("pic");
 					
 					if(imgPic != null && imgPic.getInputStream().available() > 0) {
-						
+					
 						String picBase64 = new Base64().encodeBase64String(convertStreamToByte(imgPic.getInputStream()));
 						
 						user.setPicBase64(picBase64);
 						user.setContentType(imgPic.getContentType());
+						
+						//miniPic
+						byte[] imageByteDecode = new Base64().decodeBase64(picBase64);
+						BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageByteDecode));
+						
+						int type = bufferedImage.getType() == 0? BufferedImage.TYPE_INT_ARGB : bufferedImage.getType();
+						
+						BufferedImage resizedImage = new BufferedImage(100, 100, type);
+						Graphics2D g = resizedImage.createGraphics();
+						g.drawImage(bufferedImage, 0, 0, 100, 100, null);
+						g.dispose();
+						
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						ImageIO.write(resizedImage, "png", baos);
+						
+						String picBase64Mini = "data:image/png;base64," + DatatypeConverter.printBase64Binary(baos.toByteArray());
+						
+						user.setMiniPicBase64(picBase64Mini);
+						
 					}else {
-						user.setPicBase64(request.getParameter("picTemp"));
-						user.setContentType(request.getParameter("contPicTemp"));
+						user.setUpdatePic(false);
 					}
 					
 					Part pdfBase = request.getPart("pdf");
@@ -173,9 +205,9 @@ public class UserServlet extends HttpServlet {
 						
 						user.setPdfBase64(pdfBase64);
 						user.setContentTypePdf(pdfBase.getContentType());
+						
 					} else {
-						user.setPdfBase64(request.getParameter("pdfTemp"));
-						user.setContentTypePdf(request.getParameter("contPdfTmp"));
+						user.setUpdatePdf(false);
 					}
 				}
 
@@ -221,7 +253,7 @@ public class UserServlet extends HttpServlet {
 				}
 
 				RequestDispatcher view = request.getRequestDispatcher("/userregistration.jsp");
-				request.setAttribute("users", userDao.list());
+				request.setAttribute("users", userDao.listAll());
 				request.setAttribute("msg", "Save successful");
 				view.forward(request, response);
 

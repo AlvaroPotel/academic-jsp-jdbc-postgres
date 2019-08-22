@@ -32,29 +32,36 @@ public class PhoneServlet extends HttpServlet {
 
 			String action = request.getParameter("action");
 			String user = request.getParameter("user");
-			UserBean userobj = userDao.consult(user);
 
-			if (action.equalsIgnoreCase("addPhones")) {
+			if (user != null) {
+				UserBean userobj = userDao.consult(user);
 
-				request.getSession().setAttribute("thisUser", userobj);
-				request.setAttribute("thisUser", userobj);
+				if (action.equalsIgnoreCase("addPhones")) {
 
-				RequestDispatcher view = request.getRequestDispatcher("/phoneregistration.jsp");
-				request.setAttribute("phones", phonesDao.list(userobj.getId()));
+					request.getSession().setAttribute("thisUser", userobj);
+					request.setAttribute("thisUser", userobj);
+
+					RequestDispatcher view = request.getRequestDispatcher("/phoneregistration.jsp");
+					request.setAttribute("phones", phonesDao.list(userobj.getId()));
+					view.forward(request, response);
+
+				} else if (action.equalsIgnoreCase("deletePhone")) {
+
+					String phoneId = request.getParameter("phoneId");
+					phonesDao.delete(phoneId);
+
+					UserBean userBean = (UserBean) request.getSession().getAttribute("thisUser");
+
+					RequestDispatcher view = request.getRequestDispatcher("/phoneregistration.jsp");
+					request.setAttribute("phones", phonesDao.list(userBean.getId()));
+					request.setAttribute("msg", "Deleted ");
+					view.forward(request, response);
+
+				}
+			}else {
+				RequestDispatcher view = request.getRequestDispatcher("/userregistration.jsp");
+				request.setAttribute("users", userDao.listAll());
 				view.forward(request, response);
-
-			} else if (action.equalsIgnoreCase("deletePhone")) {
-
-				String phoneId = request.getParameter("phoneId");
-				phonesDao.delete(phoneId);
-
-				UserBean userBean = (UserBean) request.getSession().getAttribute("thisUser");
-
-				RequestDispatcher view = request.getRequestDispatcher("/phoneregistration.jsp");
-				request.setAttribute("phones", phonesDao.list(userBean.getId()));
-				request.setAttribute("msg", "Deleted ");
-				view.forward(request, response);
-
 			}
 
 		} catch (Exception e) {
@@ -100,11 +107,11 @@ public class PhoneServlet extends HttpServlet {
 					request.setAttribute("msg", "Invalid number");
 					view.forward(request, response);
 				}
-				
+
 			} else {
-				
+
 				RequestDispatcher view = request.getRequestDispatcher("/userregistration.jsp");
-				request.setAttribute("users", userDao.list());
+				request.setAttribute("users", userDao.listAll());
 				view.forward(request, response);
 			}
 
